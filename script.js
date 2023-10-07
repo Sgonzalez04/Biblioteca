@@ -8,7 +8,6 @@ function show(current, hide){
 }
 
 function add_book(){
-    console.log(books.length);
     let name = "book" + books.length;
     let title = document.getElementById("title");
     let front = document.getElementById("front");
@@ -34,9 +33,9 @@ function add_book(){
             lend:false
         }
         books.push(window[name])
-        console.log(books);
         localStorage.setItem("books_campus", JSON.stringify(books))
-        load_books(books)
+        let order = document.getElementById("sort").value
+        sorted(order)
         show(`#books`,`#add`)
         inputs.forEach((input) =>{
             input.value = "";
@@ -149,6 +148,8 @@ function to_lend(button){
             books[id].lend = true;
             localStorage.setItem("books_campus", JSON.stringify(books))
             load_books(books)
+            let order = document.getElementById("sort").value
+            sorted(order)
         }
     })
     back.addEventListener("click", function(){
@@ -164,6 +165,8 @@ function to_return(button){
         books[id].lend = false;        
         localStorage.setItem("books_campus", JSON.stringify(books))
         load_books(books);
+        let order = document.getElementById("sort").value
+        sorted(order)
     }
 }
 
@@ -234,14 +237,9 @@ function sort_genre(a,b){
     }
 }
 
-function sort_avaliable(a,b){
-    return (a === b)? 0 : a? -1 : 1;
-}
-
 function delete_book(x){
     //busca el id del libro
     let id = x.getAttribute("data-id")
-    console.log(id);
     let bookToRemove = books[id];
 
     if (confirm(`¿Estás seguro de que deseas eliminar el libro "${bookToRemove.title}"?`)) {
@@ -250,17 +248,26 @@ function delete_book(x){
         
         localStorage.setItem("books_campus", JSON.stringify(books)) //stringify hace que quede en formato orginal
         load_books(books);
+        let order = document.getElementById("sort").value
+        sorted(order)
     }
 }
 
-//si existe en el sistema se carga si no, no carga nada
 window.addEventListener("load", function(){
     books = JSON.parse(localStorage.getItem("books_campus"));
     if (books){
         load_books(books)
+    }else{
+        books = []
     }
-    let order = localStorage.getItem("order_b")
+
+    let order = localStorage.getItem("order_b");
     let select = document.getElementById("sort")
-    select.value = order
-    sorted(order)
+    if(order){
+        select.value = order
+        sorted(order)
+    }else{
+        select.value = 1
+        sorted(1)
+    }
 })
