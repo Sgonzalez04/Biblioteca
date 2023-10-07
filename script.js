@@ -190,6 +190,8 @@ function sorted(id){
         });
         load_books(books)
     }
+
+    localStorage.setItem("order_b", id)
 }
 
 function sort_title(a,b){
@@ -251,9 +253,14 @@ function delete_book(x){
     }
 }
 
-
+//si existe en el sistema se carga si no, no carga nada
 window.addEventListener("load", function(){
     books = JSON.parse(localStorage.getItem("books_campus"));
-    load_books(books)
-    sorted(1)
+    if (books){
+        load_books(books)
+    }
+    let order = localStorage.getItem("order_b")
+    let select = document.getElementById("sort")
+    select.value = order
+    sorted(order)
 })
